@@ -2,7 +2,7 @@
 
 Experiment lab for 3D, physics, and how the brain interprets what we build in digital space. Baseline for future work (including WebXR / VR headsets).
 
-Stay on that focus: sound, music and other modalities are welcome only as they serve spatial, physical perception (e.g. cross-modal binding), not as ends in themselves.
+Think of it as 4D: space plus time, with every sense that makes something feel real. Audio is a first-class part of that (spatial sound, timing, cross-modal binding), as central as light and physics. What's out of scope is drifting into song-playing or product features; everything should serve building a convincing, beautiful experience of a place or object.
 
 ## Stack
 - Vite + React 19 + TypeScript
