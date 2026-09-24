@@ -2,11 +2,16 @@
 // An impact = optional filtered-noise burst (the "click/thock" body) + optional
 // decaying tone with inharmonic partials (metal ring).
 
+import { prepareContext } from './audioUnlock'
+
 let ctx: AudioContext | null = null
 let noise: AudioBuffer | null = null
 
 function audio() {
-  ctx ??= new AudioContext()
+  if (!ctx) {
+    ctx = new AudioContext()
+    prepareContext(ctx)
+  }
   if (ctx.state === 'suspended') void ctx.resume()
   if (!noise) {
     noise = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate)

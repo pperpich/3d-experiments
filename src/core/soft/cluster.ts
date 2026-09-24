@@ -2,17 +2,22 @@
 
 export type Member = { x: number; z: number; r: number; freq: number }
 
-// D major pentatonic, low to high. Bigger bodies sound lower, as in physical instruments.
-const NOTES = [146.83, 164.81, 185.0, 220.0, 246.94, 293.66, 329.63]
+/** D major pentatonic, D3–E4: the default tuning. */
+export const PENTATONIC_D = [146.83, 164.81, 185.0, 220.0, 246.94, 293.66, 329.63]
+// Sizes by rank, largest first. Bigger bodies sound lower, as in physical instruments.
 const RADII = [0.56, 0.5, 0.46, 0.42, 0.39, 0.35, 0.32]
 const GAP = 0.14
 
-/** Largest at the centre, others on a golden-angle spiral, then relaxed until nothing overlaps. */
-export function layout(): Member[] {
-  const m = RADII.map((r, i) => {
+/**
+ * `notes` in ascending order (up to 7): the lowest becomes the largest body, at the centre.
+ * Others go on a golden-angle spiral, then are relaxed until nothing overlaps.
+ */
+export function layout(notes: number[] = PENTATONIC_D): Member[] {
+  if (notes.length > RADII.length) throw new Error(`layout supports up to ${RADII.length} notes`)
+  const m = notes.map((freq, i) => {
     const a = i * 2.39996
     const d = i === 0 ? 0 : 0.9 * Math.sqrt(i)
-    return { x: Math.cos(a) * d, z: Math.sin(a) * d, r, freq: NOTES[i] }
+    return { x: Math.cos(a) * d, z: Math.sin(a) * d, r: RADII[i], freq }
   })
   for (let iter = 0; iter < 300; iter++) {
     for (let i = 0; i < m.length; i++) {

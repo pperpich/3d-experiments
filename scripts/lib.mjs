@@ -41,8 +41,8 @@ export async function startSession() {
 }
 
 /** Opens an experiment and waits until the Probe reports it has rendered enough frames. */
-export async function openExperiment(session, id, { width, height, wait = 1500 }) {
-  const page = await session.browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 })
+export async function openExperiment(session, id, { width, height, wait = 1500, touch = false }) {
+  const page = await session.browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: touch })
   const errors = []
   const warnings = []
   page.on('pageerror', (e) => errors.push(e.message))

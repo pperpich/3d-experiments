@@ -14,6 +14,9 @@ export type ProbeState = {
   calls: number
   triangles: number
   setCamera: (pos: [number, number, number], target?: [number, number, number]) => void
+  camera: () => [number, number, number]
+  /** World point → CSS pixel coords in the viewport, so scripts can touch real objects. */
+  project: (x: number, y: number, z: number) => [number, number]
 }
 
 declare global {
@@ -55,6 +58,12 @@ export function Probe() {
           camera.lookAt(...target)
         }
         invalidate()
+      },
+      camera: () => camera.position.toArray() as [number, number, number],
+      project: (x, y, z) => {
+        const v = new THREE.Vector3(x, y, z).project(camera)
+        const rect = gl.domElement.getBoundingClientRect()
+        return [rect.left + ((v.x + 1) / 2) * rect.width, rect.top + ((1 - v.y) / 2) * rect.height]
       },
     }
     return () => {

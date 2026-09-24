@@ -3,6 +3,8 @@
 // pentatonic scale (any two are consonant), light detune for warmth, a synthesized
 // room reverb for a sense of space.
 
+import { prepareContext } from './audioUnlock'
+
 let ctx: AudioContext | null = null
 let dry: GainNode
 let wet: GainNode
@@ -29,6 +31,7 @@ function roomImpulse(ac: AudioContext, seconds: number) {
 function audio() {
   if (!ctx) {
     ctx = new AudioContext()
+    prepareContext(ctx)
     const master = ctx.createGain()
     master.gain.value = 0.55
     master.connect(ctx.destination)
@@ -203,4 +206,9 @@ function breath(ac: AudioContext, bus: AudioNode, gain: number) {
   e.gain.setTargetAtTime(0, t + 0.05, 0.09)
   src.connect(lp).connect(e).connect(bus)
   src.start(t)
+}
+
+/** The audio engine's clock (seconds). Starting it counts as the audio unlock, so call it from a gesture. */
+export function audioTime() {
+  return audio().currentTime
 }
