@@ -1,6 +1,8 @@
 # 3D Experiments
 
-Experiment lab for physical, spatial UI: 3D, physics, and interfaces that feel real to human perception. Baseline for future work (including WebXR / VR headsets).
+Experiment lab for 3D, physics, and how the brain interprets what we build in digital space. Baseline for future work (including WebXR / VR headsets).
+
+Stay on that focus: sound, music and other modalities are welcome only as they serve spatial, physical perception (e.g. cross-modal binding), not as ends in themselves.
 
 ## Stack
 - Vite + React 19 + TypeScript
@@ -14,8 +16,8 @@ Experiment lab for physical, spatial UI: 3D, physics, and interfaces that feel r
 ## Layout
 - `src/core/Stage.tsx` — Canvas wrapper: renderer choice, defaults, mounts `Probe`.
 - `src/core/Probe.tsx` — exposes `window.__probe` (fps, draw calls, tris, `setCamera`) for scripts.
-- `src/core/soft/` — the organic "soft" toolkit shared by 003+: `organicModel` (low-jerk press/sink/exhale, nudge), `softMaterial` (shader displacement + inner glow + sound-driven vibration), `SoftPebble` (component), `WarmRoom` (lighting).
-- `src/core/audio.ts` (mechanical impacts) · `src/core/softAudio.ts` (pentatonic tonal voices, reverb, analysed + panned channels).
+- `src/core/soft/` — the organic "soft" toolkit shared by 003+: `organicModel` (low-jerk press/sink/exhale, nudge), `softMaterial` (shader displacement + inner glow + sound-driven vibration), `SoftPebble` (component), `SoftCluster` (a tuned cluster scene with a `ClusterHandle` for scripted playing), `cluster` (layout/consonance/wave propagation), `floorMaterial`, `WarmRoom` (lighting).
+- `src/core/audio.ts` (mechanical impacts) · `src/core/softAudio.ts` (pentatonic tonal voices, reverb, analysed + panned channels, `audioTime()` clock) · `src/core/audioUnlock.ts` (iOS gesture unlock + silent-switch bypass; both audio modules use it).
 - `src/experiments/<NNN-name>/meta.ts` + `index.tsx` — auto-registered via `import.meta.glob`. `meta.views` = camera positions for contact sheets.
 - `scripts/probe.mjs`, `scripts/snap.mjs` — headless Chromium (GPU on, Metal ANGLE, WebGPU enabled).
 
