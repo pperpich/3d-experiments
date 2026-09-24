@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "probe": "node scripts/probe.mjs",
-    "snap": "node scripts/snap.mjs"
+    "snap": "node scripts/snap.mjs",
+    "build:pages": "tsc --noEmit && vite build --config vite.pages.config.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

@@ -1,5 +1,6 @@
 import { useEffect, useImperativeHandle, useMemo, useRef, type Ref } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
+import * as THREE from 'three'
 import { ContactShadows, OrbitControls } from '@react-three/drei'
 import { SoftPebble, type PebbleHandle } from './SoftPebble'
 import { WarmRoom } from './WarmRoom'
@@ -113,16 +114,45 @@ function Cluster({ notes, ref }: { notes: number[]; ref?: Ref<ClusterHandle> }) 
   )
 }
 
+/**
+ * Keeps the whole cluster in frame on any aspect ratio (portrait phones especially):
+ * on resize, slides the camera along its current view direction until the cluster's
+ * width fits the horizontal field of view. It never moves closer than `minDistance`, so
+ * landscape screens keep the authored framing. Fog follows, so it only ever hides the
+ * horizon and never the cluster.
+ */
+function FitCluster({ halfWidth, target, minDistance }: { halfWidth: number; target: THREE.Vector3; minDistance: number }) {
+  const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera
+  const aspect = useThree((s) => s.size.width / s.size.height)
+  const fog = useThree((s) => s.scene.fog) as THREE.Fog | null
+  useEffect(() => {
+    const tanH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * aspect
+    const distance = Math.max(minDistance, halfWidth / tanH)
+    const dir = camera.position.clone().sub(target).normalize()
+    camera.position.copy(target).addScaledVector(dir, distance)
+    camera.updateProjectionMatrix()
+    if (fog) {
+      fog.near = distance + 1
+      fog.far = distance + 9
+    }
+  }, [camera, aspect, halfWidth, target, minDistance, fog])
+  return null
+}
+
+const TARGET = new THREE.Vector3(0, 0.1, 0)
+
 /** Everything inside the <Stage> for a soft cluster: room, fog, pebbles, floor, controls. */
 export function SoftClusterScene({ notes = PENTATONIC_D, ref }: { notes?: number[]; ref?: Ref<ClusterHandle> }) {
   return (
     <>
       <color attach="background" args={[CLUSTER_BG]} />
-      <fog attach="fog" args={[CLUSTER_BG, 6, 14]} />
+      <fog attach="fog" args={[CLUSTER_BG, 6.1, 14.1]} />
       <WarmRoom shadowExtent={2.5} />
       <Cluster notes={notes} ref={ref} />
+      {/* Cluster extent is ~1.7 in radius; the margin keeps rings and shadows in frame too. */}
+      <FitCluster halfWidth={1.9} target={TARGET} minDistance={5.1} />
       <ContactShadows frames={1} position={[0, 0.002, 0]} opacity={0.75} color="#0d0a08" scale={7} blur={2.4} far={0.8} resolution={512} />
-      <OrbitControls makeDefault target={[0, 0.1, 0]} enablePan={false} minDistance={2.5} maxDistance={8} minPolarAngle={0.2} maxPolarAngle={1.3} />
+      <OrbitControls makeDefault target={TARGET} enablePan={false} minDistance={2.5} maxDistance={16} minPolarAngle={0.2} maxPolarAngle={1.3} />
     </>
   )
 }

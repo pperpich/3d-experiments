@@ -2,6 +2,8 @@
 
 A lab for 3D and physics in interfaces, and for how the brain interprets what we build in digital space. The target is perception, not technical parity: motion, light, material and sound are tuned for how interactions *feel*, and deliberate perceptual illusions are fair game. It's meant as a baseline for future work, including WebXR headsets.
 
+**Try it live:** [pperpich.github.io/3d-experiments](https://pperpich.github.io/3d-experiments/). Only the Amazing Grace experiment is published there; run the repo locally for the rest.
+
 ## Experiments
 
 | | |
@@ -30,6 +32,7 @@ Vite · React 19 · TypeScript · Three.js via React Three Fiber and drei · Rap
 
 - `npm run probe -- <id> | --all`: headless, text-only health check (frame timing, draw calls, errors, pixel statistics, visual change since the last run)
 - `npm run snap -- <id> [--views]`: headless screenshot or multi-angle contact sheet into `.snaps/`
+- `npm run build:pages`: builds the public site (`pages/` → `dist-pages/`), which contains only `005-amazing-grace`. A push to `main` deploys it via GitHub Actions.
 
 ## License
 
